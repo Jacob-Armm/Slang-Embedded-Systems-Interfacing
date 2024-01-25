@@ -4,9 +4,12 @@ package bc.BuildingControl
 
 import org.sireum._
 import bc._
+import devices._
 
 // This file will not be overwritten so is safe to edit
 object TempSensor_i_tcp_tempSensor {
+
+  var device: Option[Potentiometer] = None()
 
   def initialise(api: TempSensor_i_Initialization_Api): Unit = {
     api.put_currentTemp(BuildingControl.Temperature_i.example())
@@ -28,8 +31,4 @@ object TempSensor_i_tcp_tempSensor {
   def finalise(api: TempSensor_i_Operational_Api): Unit = {}
 
   def recover(api: TempSensor_i_Operational_Api): Unit = {}
-}
-
-@ext object TempSensorNative {
-  def currentTempGet(): Temperature_i = $
 }

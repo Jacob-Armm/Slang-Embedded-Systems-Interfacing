@@ -1,6 +1,6 @@
 package bc.BuildingControl.device
 
-import bc.BuildingControl.device.FirmataUtil.PinMode
+import .PinMode
 import bc.BuildingControl.{FanAck, FanCmd, Util}
 import org.sireum._
 

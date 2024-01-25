@@ -59,7 +59,3 @@ object TempControl_i_tcp_tempControl {
 
   def recover(api: TempControl_i_Operational_Api): Unit = {}
 }
-
-@ext object TempControlNative {
-  def fanAckLog(success: FanAck.Type): Unit = $
-}

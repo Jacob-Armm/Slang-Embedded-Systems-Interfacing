@@ -4,9 +4,12 @@ package bc.BuildingControl
 
 import org.sireum._
 import bc._
+import devices._
 
 // This file will not be overwritten so is safe to edit
 object Fan_i_tcp_fan {
+
+  var device: Option[LED] = None()
 
   def initialise(api: Fan_i_Initialization_Api): Unit = {
 
@@ -29,8 +32,4 @@ object Fan_i_tcp_fan {
   def finalise(api: Fan_i_Operational_Api): Unit = {}
 
   def recover(api: Fan_i_Operational_Api): Unit = {}
-}
-
-@ext object FanNative {
-  def fanCmdActuate(cmd: FanCmd.Type): FanAck.Type = $
 }
