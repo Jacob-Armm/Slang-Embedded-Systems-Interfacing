@@ -24,7 +24,7 @@ object Platform {
     val fanPin: Pin = Pin("fan", PinMode.OUTPUT)
     val tempSensorPin: Pin = Pin("tempSensor", PinMode.ANALOG)
 
-    val pinMap: Map[String, Z] = Map.empty ++ ISZ(
+    val pinMap: Map[String, Z] = Map.empty[String, Z] ++ ISZ(
       fanPin.pinAlias ~> 13,
       tempSensorPin.pinAlias ~> 14
     )
@@ -36,8 +36,8 @@ object Platform {
     val fan: LED = LED(fanPin)
     val tempSensor: Potentiometer = Potentiometer(tempSensorPin)
 
-    Fan_i_tcp_fan.device = Some(fan)
-    TempSensor_i_tcp_tempSensor.device = Some(tempSensor)
+    Fan_i_tcp_fan.device = MSome(fan)
+    TempSensor_i_tcp_tempSensor.device = MSome(tempSensor)
     // END MARKER PLATFORM SETUP
   }
 
