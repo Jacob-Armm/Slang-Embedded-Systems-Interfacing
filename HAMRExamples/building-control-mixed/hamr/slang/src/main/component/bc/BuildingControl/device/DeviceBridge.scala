@@ -5,6 +5,7 @@ package bc.BuildingControl.device
 import org.sireum._
 import devices.{LED, Potentiometer}
 import bc.BuildingControl.{FanAck, FanCmd, TempUnit, Temperature_i, Util}
+import utils.Converter
 
 object DeviceBridge {
   def getCurrentTemp(device: Potentiometer):Temperature_i = {
@@ -30,9 +31,4 @@ object DeviceBridge {
   def map(x: Z, in_min: Z, in_max: Z, out_min: Z, out_max: Z): Z = {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
   }
-}
-
-@ext object Converter {
-  def FtoZ(value: F32): Z = $
-  def ZtoF(value: Z): F32 = $
 }
