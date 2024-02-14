@@ -6,20 +6,21 @@ import org.sireum._
 import bc.BuildingControl.device.DeviceBridge
 import bc._
 import devices._
+import utils.DeviceBehavior
+
 
 // This file will not be overwritten so is safe to edit
 object Fan_i_tcp_fan {
 
-  var device: MOption[LED] = MNone()
-
   def initialise(api: Fan_i_Initialization_Api): Unit = {
-
+    DeviceBridge.TempSensor.start(DeviceBehavior.Stateful)
   }
 
   def handle_fanCmd(api: Fan_i_Operational_Api, value: BuildingControl.FanCmd.Type): Unit = {
     api.logInfo(s"received fanCmd $value")
 
-    val ack = DeviceBridge.sendFanCmd(device.get, value)
+    DeviceBridge.Fan.setState(value)
+    val ack = DeviceBridge.Fan.state
 
     api.put_fanAck(ack)
 
