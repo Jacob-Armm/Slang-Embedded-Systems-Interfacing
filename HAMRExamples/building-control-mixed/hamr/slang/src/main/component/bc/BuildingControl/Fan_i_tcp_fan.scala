@@ -13,7 +13,7 @@ import utils.DeviceBehavior
 object Fan_i_tcp_fan {
 
   def initialise(api: Fan_i_Initialization_Api): Unit = {
-    DeviceBridge.TempSensor.start(DeviceBehavior.Stateful)
+
   }
 
   def handle_fanCmd(api: Fan_i_Operational_Api, value: BuildingControl.FanCmd.Type): Unit = {

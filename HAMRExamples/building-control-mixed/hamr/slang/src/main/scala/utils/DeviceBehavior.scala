@@ -7,4 +7,5 @@ import org.sireum._
   "Stateful"
   "Asynchronous"
   "Continuous"
+  "Periodic"
 }

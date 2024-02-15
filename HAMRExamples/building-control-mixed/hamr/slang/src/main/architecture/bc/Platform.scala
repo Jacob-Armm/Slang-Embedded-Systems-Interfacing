@@ -2,6 +2,7 @@
 
 package bc
 
+import bc.BuildingControl.device.DeviceBridge
 import org.sireum._
 import bc.BuildingControl.{Fan_i_tcp_fan, TempSensor_i_tcp_tempSensor}
 import platform.LPConn
@@ -14,15 +15,14 @@ import utils.PinModeUtil._
 
 object Platform {
 
-  /*
-  TODO: Move to Device Bridge (CPconn)
-   */
   def setup(): Unit = {
     // BEGIN MARKER PLATFORM SETUP
     {
       // Contributions from GumboX Plugin
       bc.runtimemonitor.RuntimeMonitor.init(bc.runtimemonitor.ModelInfo.modelInfo)
     }
+
+    DeviceBridge.setup()
 
     // END MARKER PLATFORM SETUP
   }

@@ -25,6 +25,18 @@ object DeviceBridge {
       tempSensorPin.pinAlias ~> 14
     )
 
+    /*
+
+    Rewrite PlatformImpl and LPConn_Ext to handle new format
+
+    val imp: ISZ[platforms]
+
+    @datatype class System(id: String, platform: PlatformImpl, port: Option[Z])
+
+
+
+     */
+
     val conf: Config = Config(pinMap, implGetter.getImpl("Firmata", pinMap), None())
 
     LPConn.init(conf, ISZ(fanPin, tempSensorPin))
@@ -35,62 +47,21 @@ object DeviceBridge {
 
   object Fan {
     var state: FanAck.Type = FanAck.Ok
-    var behavior: Option[DeviceBehavior.Type] = None()
-
-    def start(b: DeviceBehavior.Type): Unit = {
-      behavior = Some(b)
-    }
 
     def setState(cmd: FanCmd.Type): Unit = {
-      behavior match {
-        case Some(t) =>
-          t match {
-            case DeviceBehavior.Stateful => {
-              cmd match {
-                case FanCmd.On =>
-                  led.on()
-                case FanCmd.Off =>
-                  led.off()
-              }
-              state = FanAck.Ok
-            }
-            case DeviceBehavior.Asynchronous => {
-              cmd match {
-                case FanCmd.On =>
-                  led.on()
-                case FanCmd.Off =>
-                  led.off()
-              }
-              state = FanAck.Ok
-            }
-          }
+      cmd match {
+        case FanCmd.On =>
+          led.on()
+        case FanCmd.Off =>
+          led.off()
       }
+      state = FanAck.Ok
     }
   }
 
   object TempSensor {
-    var state: Z = 0
-    var behavior: Option[DeviceBehavior.Type] = None()
-
-    def start(b: DeviceBehavior.Type): Unit = {
-      behavior = Some(b)
-      updateState()
-    }
-
-    def updateState(): Unit = {
-      behavior match {
-        case Some(t) =>
-          t match {
-            case DeviceBehavior.Stateful => state = pot.getPotValue
-            case DeviceBehavior.Continuous => while(T) {state = pot.getPotValue} //TODO: Open A Thread
-            case DeviceBehavior.Asynchronous => state = pot.getPotValue //TODO: Open A Thread
-          }
-        case None() => assert(F)
-      }
-    }
-
     def getCurrentTemp():Temperature_i = {
-      if(behavior.get != DeviceBehavior.Continuous) {updateState()}
+      updateState()
       val minTempZ: Z = Converter.FtoZ(Util.minTemp)
       val maxTempZ: Z = Converter.FtoZ(Util.maxTemp)
       val tempScaled = Converter.ZtoF(map(state, 0, 1023, minTempZ, maxTempZ))
@@ -101,6 +72,10 @@ object DeviceBridge {
       return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
     }
   }
+}
+
+@ext object fetchTemp {
+  def getState(): Z = $
 }
 
 @ext object implGetter {

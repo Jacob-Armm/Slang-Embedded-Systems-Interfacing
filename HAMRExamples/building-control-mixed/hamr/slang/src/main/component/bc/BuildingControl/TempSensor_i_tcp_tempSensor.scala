@@ -14,7 +14,6 @@ object TempSensor_i_tcp_tempSensor {
   def initialise(api: TempSensor_i_Initialization_Api): Unit = {
     api.put_currentTemp(BuildingControl.Temperature_i.example())
     api.put_tempChanged()
-    DeviceBridge.TempSensor.start(DeviceBehavior.Stateful)
   }
 
   def timeTriggered(api: TempSensor_i_Operational_Api): Unit = {
