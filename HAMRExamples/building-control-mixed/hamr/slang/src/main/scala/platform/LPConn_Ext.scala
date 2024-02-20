@@ -3,20 +3,29 @@ package platform
 import platform.impl.PlatformImpl
 import devices.Pin
 import org.sireum._
-import utils.Config
 import utils.PinModeUtil.PinMode
 
 object LPConn_Ext {
 
-  private var pinMap: Map[String, Z] = _
+  private var universalPinMap: Map[String, (Z, String)] = Map.empty[String, (Z, String)]
 
-  private var architectureImpl: PlatformImpl = _
+  private var deviceSets: ISZ[DeviceSet] = _
 
-  def init(conf: Config, logicalPins: ISZ[Pin]): Unit = {
-    architectureImpl = conf.impl
-    architectureImpl.init(conf.port)
-    pinMap = conf.pinMap
+  def init(deviceSets: ISZ[DeviceSet], logicalPins: ISZ[Pin]): Unit = {
+    this.deviceSets = deviceSets
 
+    for(deviceSet <- deviceSets) {
+      for(k <- deviceSet.platform.retrievePinMap.keys) {
+        val x = (k, (deviceSet.platform.retrievePinMap.get(k).get, deviceSet.id))
+        universalPinMap = universalPinMap ++ ISZ(x)
+      }
+    }
+
+    for(deviceSet <- deviceSets) {
+      deviceSet.platform.init(deviceSet.port)
+    }
+
+    /*
     val physicalPins = architectureImpl.retievePinList
 
     for(pin <- logicalPins){
@@ -34,20 +43,39 @@ object LPConn_Ext {
     for(pin <- logicalPins) {
       assert(ops.ISZOps(physicalPins.get(pinMap.get(pin.pinAlias).get).get).contains(pin.mode), s"\nPinMode Map Mismatch: pinMode ${pin.mode} is an invalid pinMode for ${pinMap.get(pin.pinAlias).get} which can only accept ${physicalPins.get(pinMap.get(pin.pinAlias).get).get}")
     }
+    */
 
 
   }
 
   def ready: B = {
-    architectureImpl.ready
+    var r = T
+    for(deviceSet <- deviceSets) {
+      if(!deviceSet.platform.ready) {
+        r = F
+      }
+    }
+    return r
   }
 
   def read(pin: String, mode: PinMode.Type): Z = {
-    architectureImpl.read(pin, mode)
+    val p = universalPinMap.get(pin).get
+    var platformImpl: PlatformImpl = null
+    for(deviceSet <- deviceSets) {
+      if(deviceSet.id == p._2) {platformImpl = deviceSet.platform}
+    }
+
+    platformImpl.read(pin, mode)
   }
 
   def write(pin: String, mode: PinMode.Type, value: Z): Unit = {
-    architectureImpl.write(pin, mode, value)
+    val p = universalPinMap.get(pin).get
+    var platformImpl: PlatformImpl = null
+    for(deviceSet <- deviceSets) {
+      if(deviceSet.id == p._2) {platformImpl = deviceSet.platform}
+    }
+
+    platformImpl.write(pin, mode, value)
   }
 
 }

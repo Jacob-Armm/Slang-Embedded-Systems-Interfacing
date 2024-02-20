@@ -10,6 +10,7 @@ object implGetter_Ext {
 
     return imp.value match {
       case "Firmata" => FirmataImpl(pinMap)
+      case "GUI" => GUIExampleImpl(pinMap)
     }
   }
 }

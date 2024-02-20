@@ -5,10 +5,12 @@ import org.sireum._
 import utils.PinModeUtil.PinMode
 
 
-@msig trait PlatformImpl {
+@sig trait PlatformImpl {
   def init(port: Option[String]): Unit
 
   def retievePinList: Map[Z, ISZ[PinMode.Type]]
+
+  def retrievePinMap: Map[String, Z]
 
   def ready: B
 

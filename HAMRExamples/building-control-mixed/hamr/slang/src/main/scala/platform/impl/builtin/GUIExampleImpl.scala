@@ -134,15 +134,7 @@ case class GUIExampleImpl(pinMap: Map[String, Z]) extends PlatformImpl {
     gui.f.repaint()
   }
 
-  override def $clonable: Boolean = false
-
-  override def $clonable_=(b: Boolean): MutableMarker = this
-
-  override def $owned: Boolean = false
-
-  override def $owned_=(b: Boolean): MutableMarker = this
-
-  override def $clone: MutableMarker = this
-
   override def string: String = this.toString
+
+  override def retrievePinMap: Map[String, Z] = pinMap
 }
