@@ -21,24 +21,6 @@ object DeviceBridge {
     val tempSensorPin: Pin = Pin("tempSensor", PinMode.ANALOG)
 
 
-
-    /*
-
-    val pinMap: Map[String, Z] = Map.empty[String, Z] ++ ISZ(
-      fanPin.pinAlias ~> 13,
-      tempSensorPin.pinAlias ~> 14
-    )
-
-    Rewrite PlatformImpl and LPConn_Ext to handle new format
-
-    val imp: ISZ[platforms]
-
-     val globalPinMap [String ~> (Z, String)]
-
-
-     */
-
-
     val pinMapG1: Map[String, Z] = Map.empty[String, Z] ++ ISZ(fanPin.pinAlias ~> 1)
     val deviceSetGUI1: DeviceSet = DeviceSet("G1", implGetter.getImpl("GUI", pinMapG1), None())
 
@@ -57,6 +39,9 @@ object DeviceBridge {
 
     led = LED(fanPin)
     pot = Potentiometer(tempSensorPin)
+
+    fetchTemp.init(pot)
+    fanSet.init(led, 0)
   }
 
   object Fan {
@@ -65,9 +50,9 @@ object DeviceBridge {
     def setState(cmd: FanCmd.Type): Unit = {
       cmd match {
         case FanCmd.On =>
-          led.on()
+          fanSet.setState(1)
         case FanCmd.Off =>
-          led.off()
+          fanSet.setState(0)
       }
       state = FanAck.Ok
     }
@@ -77,7 +62,7 @@ object DeviceBridge {
     def getCurrentTemp():Temperature_i = {
       val minTempZ: Z = Converter.FtoZ(Util.minTemp)
       val maxTempZ: Z = Converter.FtoZ(Util.maxTemp)
-      val tempScaled = Converter.ZtoF(map(pot.getPotValue, 0, 1023, minTempZ, maxTempZ))
+      val tempScaled = Converter.ZtoF(map(fetchTemp.getState(), 0, 1023, minTempZ, maxTempZ))
       return Temperature_i(tempScaled, TempUnit.Fahrenheit)
     }
 
@@ -88,7 +73,14 @@ object DeviceBridge {
 }
 
 @ext object fetchTemp {
+  def init(device: Potentiometer): Unit = $
   def getState(): Z = $
+}
+
+@ext object fanSet {
+  def init(device: LED, initVal: Z): Unit = $
+
+  def setState(v: Z): Unit = $
 }
 
 @ext object implGetter {

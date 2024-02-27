@@ -15,22 +15,17 @@ object fetchTemp_Ext {
   var thread: Thread = new Thread {
     override def run(): Unit = {
       while (true) {
-        wait(50)
+        Thread.sleep(2000)
         state.set(device.getPotValue.toLong)
       }
     }
   }
 
-  def init(device: Potentiometer) = {
+  def init(device: Potentiometer): Unit = {
     this.device = device
     state.set(device.getPotValue.toLong)
     thread.start()
   }
 
   def getState(): Z = Z(state.get())
-
-
-
-
-
 }
