@@ -1,8 +1,8 @@
-package demos.LEDButton
+package demos.StepperMotorExample
 
 import org.sireum._
 import platform.impl.PlatformImpl
-import platform.impl.builtin.{FirmataImpl, GUIExampleImpl}
+import platform.impl.builtin.FirmataImpl
 
 object implGetter_Ext {
   def getImpl(pinMap: Map[String, Z]): PlatformImpl = {

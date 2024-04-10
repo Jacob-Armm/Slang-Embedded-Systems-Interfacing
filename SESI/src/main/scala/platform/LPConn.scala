@@ -4,11 +4,10 @@ package platform
 import org.sireum._
 import utils.PinModeUtil.PinMode
 import devices.Pin
-import utils.Config
 
 @ext object LPConn {
 
-  def init(conf: Config, logicalPins: ISZ[Pin]): Unit = $
+  def init(deviceSets: ISZ[DeviceSet], logicalPins: ISZ[Pin]): Unit = $
 
   def ready: B = $
 
