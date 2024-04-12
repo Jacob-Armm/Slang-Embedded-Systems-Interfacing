@@ -1,0 +1,1 @@
+[ "Default_Initialize_Config|Default Initialize Configuration", "Compute_Config_ranges_based_on_requirements|Ranges based on requirements - ie 96.0 <= lower_alarm <= 101.0 and 97.0 <= upper_alarm <= 102.  Also restrict current_temp to be between 86.0 and 112.0 inclusive" ]
