@@ -11,6 +11,7 @@ object Platform {
   def setup(): Unit = {
     // BEGIN MARKER PLATFORM SETUP
     // END MARKER PLATFORM SETUP
+    DeviceBridge.setup()
   }
 
   def tearDown(): Unit = {

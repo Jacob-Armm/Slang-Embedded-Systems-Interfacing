@@ -23,7 +23,8 @@ object Heat_Source_impl_heat_source_cpi_heat_controller {
     if (heater_state != api.get_heat_control().get) {
       heater_state = api.get_heat_control().get
       api.logInfo(s"Received command: ${heater_state}")
-      Heat_Source_Native.setState(heater_state)
+      //Heat_Source_Native.setState(heater_state)
+      DeviceBridge.Heater.setState(heater_state)
     }
   }
 

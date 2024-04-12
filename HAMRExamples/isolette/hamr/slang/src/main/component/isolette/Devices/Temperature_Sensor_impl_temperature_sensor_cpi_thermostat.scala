@@ -17,7 +17,7 @@ object Temperature_Sensor_impl_temperature_sensor_cpi_thermostat {
   }
 
   def timeTriggered(api: Temperature_Sensor_impl_Operational_Api): Unit = {
-    val t = api.get_air().get // air is unconnected so simulating values via injection in Temperature_Sensor__InjectionProvider_Ext$
+    val t = DeviceBridge.TempSensor.getCurrentTemp()// air is unconnected so simulating values via injection in Temperature_Sensor__InjectionProvider_Ext$
 
     // TODO:
     //  Status value (Valid, Invalid) of sensed temperature.
