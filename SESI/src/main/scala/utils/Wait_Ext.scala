@@ -4,6 +4,11 @@ import org.sireum._
 import java.util.concurrent.TimeUnit
 
 object Wait_Ext {
+
+  def waitInMicroS(ms: Z): Unit = {
+    TimeUnit.MICROSECONDS.sleep(ms.toLong)
+  }
+
   def waitInMS(ms: Z): Unit = {
     TimeUnit.MILLISECONDS.sleep(ms.toLong)
   }

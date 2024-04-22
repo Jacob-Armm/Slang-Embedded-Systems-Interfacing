@@ -52,6 +52,10 @@ object Interface_Ext {
 
   def setAlarmControl(v: Option[Isolette_Data_Model.On_Off.Type]): Unit = {
     form.setAlarmControl(v)
+    v match {
+      case Some(n) => DeviceBridge.Alarm.setState(n)
+      case None() => print()
+    }
   }
 
 
