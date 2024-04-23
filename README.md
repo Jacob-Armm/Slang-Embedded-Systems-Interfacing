@@ -30,9 +30,12 @@ This layer represents the physical implementation of the system such as a embedd
 
 # How to use SESI
 
-In this section we will discuss how to use SESI both with and without HAMR
-
-## SESI Without HAMR
+In this section we will discuss how to use SESI both with and without HAMR. Both follow the general pattern of
+1. Defining the Abstract Pins
+2. Defining a Pin Map and Device Set
+3. Initializing the Abstract-Physical association
+4. Initializing Devices
+5. Establishing Behavior (This can be done by hand or in the conetext of HAMR)
 
 To desicribe how to use SESI without HAMR, we will look at a basic stepper motor program.
 
@@ -80,13 +83,13 @@ of pin commands to their respective platform when calling read and write.
 
 ### Initializing Devices
 
-Now that the architecture and all platforms have been instantiated, we can now define the abstract devices which act as proxies for the real devices by defining how certain actions will be translated to pin commands that will be handled by the underlying abract pins.
+Now that the architecture and all platforms have been instantiated, we can now define the abstract devices which act as proxies for the real devices by defining how certain actions will be translated to pin commands that will be handled by the underlying abract pins in the Abstract-Physical Association.
 
 ```
     val SM: StepperMotor = StepperMotor(60, 4, SMn1, SMn2, SMn3, SMn4)
 ```
 
-### Behavior
+### Behavior without HAMR
 
 Now that the entire architecture has been defined we can write the behavior for the system.
 
@@ -101,19 +104,98 @@ Now that the entire architecture has been defined we can write the behavior for 
     }
 ```
 
-## SESI With HAMR
+### Behavior with HAMR
 
+When defining behavior in a HAMR context a good pattern to use is creating objects for each component that act as translators between
+the physical device and the HAMR component. For this we will look at the temp sesnor component of the isolette system.
+
+We will first look the timeTriggered method for the Temp_Sensor component in the HAMR Generated code layer. This method is a periodic method that gets called on a set interval to
+get the current temperature.
+
+```
+def timeTriggered(api: Temperature_Sensor_impl_Operational_Api): Unit = {
+
+    val t = DeviceBridge.TempSensor.getCurrentTemp()// air is unconnected so simulating values via injection in Temperature_Sensor__InjectionProvider_Ext$
+
+    // TODO:
+    //  Status value (Valid, Invalid) of sensed temperature.
+    //  Determine what meaningful approach should followed to choose a status value.
+    //  As of now, the status value is always set to "Valid"
+    val current_tempWstatus = Isolette_Data_Model.TempWstatus_impl(t.value, Isolette_Data_Model.ValueStatus.Valid)
+    api.put_current_tempWstatus(current_tempWstatus)
+    api.logInfo(s"Sensed temperature: ${t.value}")
+}
+```
+
+You can see that anytime we wish to update the temperature, we make a call to TempSensor in the DeviceBridge Layer to give some temperature. TempSensor is the object that
+is acting as the translator between SESI and the HAMR generated model.
+
+```
+object TempSensor {
+
+    def getCurrentTemp:Temp_impl = {
+      val tempScaled = Converter.ZtoF(map(pot.getPotValue, 0, 1023, 90, 105))
+      return Temp_impl(tempScaled)
+    }
+
+    def map(x: Z, in_min: Z, in_max: Z, out_min: Z, out_max: Z): Z = {
+      return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    }
+}
+```
+
+In the case of TempSensor, the object is translating the mapping the output of a potentiometer into the range of possible temperatures for the system for which is between 90 and 105.
 
 
 # How to Extend SESI
 
+In this section we will discuss how to add new devices and platforms
+
+### How to Add New Devices
+
+You can add new devices to the system by composing the device with pins and then using those pins to describe the semantics of the device in terms of the pin commands. We will use
+and RGB LED as an example of how to add a new device.
+
+1. In this case of an RGB LED, the LED will take 3 pins with one pin for each color. (Composing the device with pins)
+```
+@record class RGBLED(pinR: Pin, pinG: Pin, pinB: Pin) {}
+```
+
+2. To change the color we will need a method to determine what value is sent along each pin to set the color of the LED (Writing the semantics in terms of pin commands)
+```
+@record class RGBLED(pinR: Pin, pinG: Pin, pinB: Pin) {
+  def setColor(r: Z, g: Z, b: Z): Unit = {
+    pinR.write(r)
+    pinG.write(g)
+    pinB.write(b)
+  }
+}
+```
+
+After doing both steps, we have a fully functioning RGB LED that can be used with the SESI architecture.
+
+### How to Add New Platforms
+
+You can add new platforms by extending the PlatformImpl trait which provides undefined methods that should be sufficient to translate between SESI and any interface that can
+be controlled with read-write semantics. For an example you can look at SESI/src/main/scala/platform/impl/builtin/ and SESI/src/main/scala/platform/LPConn_Ext.scala to see
+how SESI uses the platform along with the Abstrat-Physical Associaction to translate pin commands in SESI into valid commands for both a GUI and Firmata.
+
+# More Examples
+
+To find more examples of SESI go to SESI/src/main/scala/demos where there are walkthroughs over the code, mock assignments, and general examples.
+
+To find more examples of SESI with HAMR go to the HAMRExamples folder and click on any example. From here go to ./hamr/slang/src/main/component to see how SESI works with HAMR's components
+
+# Current Issues
+
+1. SESI currently uses Firmata4j. This results in the following problems:
+    - Doesn't support OneWire
+    - Poor documentation on certain protocols
+    - Non-standard I2C implementation
+2. Poor Naming Scheme
+3. Lacking in examples
 
 
-## How to Add New Devices
-
-
-
-## How to Add New Platforms
 
 
 
