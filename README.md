@@ -1,12 +1,12 @@
 # Introduction
 
-**SESI** (Slang Embedded Systems Interacing) is a tool that provides the ability for rapid prototyping on physical systems for the Sireum Program Transformation, Analysis, and Verification Framework. Rapid prototyping is accomplished by using platforms that can translate commands from an abstract represtentation of a system into an acceptable format for different systems such as Firmata or GUI simulations.
+**SESI** (Slang Embedded Systems Interfacing) is a tool that provides the ability for rapid prototyping on physical systems for the Sireum Program Transformation, Analysis, and Verification Framework. Rapid prototyping is accomplished by using platforms that can translate commands from an abstract representation of a system into an acceptable format for different systems, such as Firmata or GUI simulations.
 
-This tool works in tadnem with HAMR framework which is a code generation and system build framework for embedded systems whose architecture is specified using the Architecture Analysis and Design Language.
+This tool works in tandem with the HAMR framework, which is a code generation and system building framework for embedded systems whose architecture is specified using the Architecture Analysis and Design Language.
 
 # Abstractions
 
-SESI consists of five levels of abstraction which are the HAMR Generated Code, Device Bridge, Abstract Device Layer, Abstract-Physical Association, and Physical Device Layer. The first layer is neccesary for interaction between HAMR and SESI while the last four layers are built into or required by SESI.
+SESI consists of five levels of abstraction, which are the HAMR Generated Code, Device Bridge, Abstract Device Layer, Abstract-Physical Association, and Physical Device Layer. The first layer is necessary for interaction between HAMR and SESI while the last four layers are built into or required by SESI.
 
 - **HAMR Generated Code**
 
@@ -14,11 +14,11 @@ SESI consists of five levels of abstraction which are the HAMR Generated Code, D
 
 - **Device Bridge**
 
-    This layer is used to define and initialize the abstract structre of the system using SESI. This layer can also provides objects that define how HAMR generated components will interacts with the abstract architecture by defining what abstract device symbloizes the component and tranlating data into acceptable formats when data is passed between the components and the abstarct device.
+    This layer is used to define and initialize the abstract structure of the system using SESI. This layer can also provide objects that define how HAMR generated components will interact with the abstract architecture by defining what abstract device symbolizes the component and translating data into acceptable formats when the data is passed between the components and the abstract device.
 
 - **Abract Device Layer**
 
-    This layer is used to translate commands from the abract devices into pin commands that can be used in the Abstract-Physical Assocition layer. While this layer is arbitrary since the pin commands can be called directly from the device bridge layer, this layer is still used to encapsulate the device behavior and provide a sense of parity.
+    This layer is used to translate commands from abstract devices into pin commands that can be used in the Abstract-Physical Association layer. While this layer is arbitrary since the pin commands can be called directly from the device bridge layer, this layer is still used to encapsulate the device behavior and provide a sense of parity.
 
 - **Abstract-Physical Association**
 
@@ -26,7 +26,7 @@ SESI consists of five levels of abstraction which are the HAMR Generated Code, D
 
 - **Physical Device Layer**
 
-    This layer represents the physical implementation of the system such as a embedded board or GUI. This layer takes in commands from the Abstract-Physical Association and responds the commands by carrying out some behavior such as sending and recieiving data to and from the abract representation.
+    This layer represents the physical implementation of the system such as an embedded board or GUI. This layer takes in commands from the Abstract-Physical Association and responds to the commands by carrying out some behavior such as sending and receiving data to and from the abstract representation.
 
 # How to use SESI
 
@@ -35,13 +35,13 @@ In this section we will discuss how to use SESI both with and without HAMR. Both
 2. Defining a Pin Map and Device Set
 3. Initializing the Abstract-Physical association
 4. Initializing Devices
-5. Establishing Behavior (This can be done by hand or in the conetext of HAMR)
+5. Establishing Behavior (This can be done by hand or in the context of HAMR)
 
-To desicribe how to use SESI without HAMR, we will look at a basic stepper motor program.
+To describe how to use SESI without HAMR, we will look at a basic stepper motor program.
 
 ### Defining Pins
 
-First, you define all the abract pins that will be used by the abract devices.
+First, you define all the abstract pins that will be used by the abstract devices.
 
 ```
 val SMn1: Pin = Pin("n1", PinMode.OUTPUT)
@@ -54,7 +54,7 @@ In this case we defined 4 pins that are set to digital output.
 
 ### Defining a PinMap and Device Set
 
-We will now define a pinMap to define an numerical id for abstract pin that can represent things such as a specific pin on an embedded board.
+We will now define a pinMap to define a numerical ID for an abstract pin that can represent things such as a specific pin on an embedded board.
 
 ```
 val pmap1: Map[String, Z] = Map.empty[String, Z] ++ ISZ(
@@ -67,13 +67,13 @@ val pmap1: Map[String, Z] = Map.empty[String, Z] ++ ISZ(
 val dset: DeviceSet = DeviceSet("dset1", implGetter.getImpl(pmap1), None())
 ```
 
-In this case the pinMap will match these pins to one deviceSet which is used to tie pins to a specific instance of a platform. In essence this device set matches these four pins to one firmata instance. It is possible within the framework to define multiple devicesets which would allow you to have multiple physical systems running simultaneouly in tandem with each other (i.e. a displaying output on a GUI while taking imports from a physical board).
+In this case, the pinMap will match these pins to one deviceSet device, which is used to tie pins to a specific instance of a platform. In essence, this device set matches these four pins to one Firmata instance. It is possible within the framework to define multiple deviceSets which would allow you to have multiple physical systems running simultaneously in tandem with each other (i.e. displaying output on a GUI while taking imports from a physical board).
 
 **Note: impGetter.getImpl(pmap1) is used to retireve platforms that are not written in slang so that they can be used in a slang context**
 
 ### Initializing the Abract-Physical Association
 
-To initialize the abstract to physical communication layer you call LPConn.init with the list of all device sets and pins. This method initializes all platforms and creates a universal pin map which acts similarly to the normal pinMap. The difference is that the universal pinMap, maps pin alias to both platform and id number instead of just a pin number. This is done to direct the flow of pin commands to their respective platform when calling read and write.
+To initialize the Abstract-Physical Association layer, you call LPConn.init with the list of all device sets and pins. This method initializes all platforms and creates a universal pin map which acts similarly to the normal pinMap. The difference is that the universal pinMap, maps pin alias to both platform and id number instead of just a pin ID. This is done to direct the flow of pin commands to their respective platform when calling read and write.
 
 ```
    LPConn.init(ISZ(dset), ISZ(SMn1, SMn2, SMn3, SMn4))
@@ -81,7 +81,7 @@ To initialize the abstract to physical communication layer you call LPConn.init 
 
 ### Initializing Devices
 
-Now that the architecture and all platforms have been instantiated, we can now define the abstract devices which act as proxies for the real devices by defining how certain actions will be translated to pin commands that will be handled by the underlying abract pins in the Abstract-Physical Association.
+Now that the architecture and all platforms have been instantiated, we can now define the abstract devices which act as proxies for the real devices by defining how certain actions will be translated to pin commands that will be handled by the underlying abstract pins in the Abstract-Physical Association.
 
 ```
     val SM: StepperMotor = StepperMotor(60, 4, SMn1, SMn2, SMn3, SMn4)
@@ -89,7 +89,7 @@ Now that the architecture and all platforms have been instantiated, we can now d
 
 ### Behavior without HAMR
 
-Now that the entire architecture has been defined we can write the behavior for the system.
+Now that the entire architecture has been defined, we can write the behavior for the system.
 
 ```
 if(LPConn.ready) { //we need to ensure that all platforms are read before trying to make calls to the proxies
@@ -106,8 +106,7 @@ if(LPConn.ready) { //we need to ensure that all platforms are read before trying
 
 When defining behavior in a HAMR context a good pattern to use is creating objects for each component that act as translators between the physical device and the HAMR component. For this we will look at the temp sesnor component of the isolette system.
 
-We will first look the timeTriggered method for the Temp_Sensor component in the HAMR Generated code layer. This method is a periodic method that gets called on a set interval to
-get the current temperature.
+We will first look at the timeTriggered method for the Temp_Sensor component in the HAMR Generated code layer. This method is a periodic method that gets called on a set interval to get the current temperature.
 
 ```
 def timeTriggered(api: Temperature_Sensor_impl_Operational_Api): Unit = {
@@ -124,7 +123,7 @@ def timeTriggered(api: Temperature_Sensor_impl_Operational_Api): Unit = {
 }
 ```
 
-You can see that anytime we wish to update the temperature, we make a call to TempSensor in the DeviceBridge Layer to give some temperature. TempSensor is the object that is acting as the translator between SESI and the HAMR generated model.
+You can see that anytime we wish to update the temperature, we make a call to TempSensor in the DeviceBridge Layer to give some temperature. TempSensor is the object that acts as the translator between SESI and the HAMR generated model.
 
 ```
 object TempSensor {
@@ -140,7 +139,7 @@ object TempSensor {
 }
 ```
 
-In the case of TempSensor, the object is translating the mapping the output of a potentiometer into the range of possible temperatures for the system for which is between 90 and 105.
+In the case of TempSensor, the object is translating the mapping the output of a potentiometer into the range of possible temperatures for the system, which is between 90 and 105.
 
 
 # How to Extend SESI
@@ -149,8 +148,7 @@ In this section we will discuss how to add new devices and platforms
 
 ### How to Add New Devices
 
-You can add new devices to the system by composing the device with pins and then using those pins to describe the semantics of the device in terms of the pin commands. We will use
-and RGB LED as an example of how to add a new device.
+You can add new devices to the system by composing the device with pins and then using those pins to describe the semantics of the device in terms of the pin commands. We will use an RGB LED as an example of how to add a new device.
 
 1. In this case of an RGB LED, the LED will take 3 pins with one pin for each color. (Composing the device with pins)
     ```
@@ -172,13 +170,13 @@ After doing both steps, we have a fully functioning RGB LED that can be used wit
 
 ### How to Add New Platforms
 
-You can add new platforms by extending the PlatformImpl trait which provides undefined methods that should be sufficient to translate between SESI and any interface that can be controlled with read-write semantics. For an example you can look at SESI/src/main/scala/platform/impl/builtin/ and SESI/src/main/scala/platform/LPConn_Ext.scala to see how SESI uses the platform along with the Abstrat-Physical Associaction to translate pin commands in SESI into valid commands for both a GUI and Firmata.
+You can add new platforms by extending the PlatformImpl trait which provides undefined methods that should be sufficient to translate between SESI and any interface that can be controlled with read-write semantics. For an example, you can look at SESI/src/main/scala/platform/impl/builtin/ and SESI/src/main/scala/platform/LPConn_Ext.scala to see how SESI uses the platform along with the Abstrat-Physical Associaction to translate pin commands in SESI into valid commands for both a GUI and Firmata.
 
 # More Examples
 
-To find more examples of SESI go to SESI/src/main/scala/demos where there are walkthroughs over the code, mock assignments, and general examples.
+To find more examples of SESI go to SESI/src/main/scala/demos where there are walkthroughs over the code, mock assignments, and general examples. 
 
-To find more examples of SESI with HAMR go to the HAMRExamples folder and click on any example. From here go to ./hamr/slang/src/main/component to see how SESI works with HAMR's components
+To find more examples of SESI with HAMR, go to the HAMRExamples folder and click on any example. From here go to ./hamr/slang/src/main/component to see how SESI works with HAMR's components.
 
 # Current Issues
 
